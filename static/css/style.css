@@ -1,0 +1,65 @@
+body::after{
+    content: "";
+    opacity: 0.5;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: -1;
+    background: url("../images/hermes-rivera-258743-unsplash.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+body{
+    font-family: 'Nunito', sans-serif;
+}
+.content-wrap{
+    position: absolute;
+    top:7vw;
+    padding:5%;
+    margin: 0 auto;
+}
+.navbar{
+    background-color: none;
+    /* box-shadow: 0px 3px 18px -1px rgba(0,0,0,0.48); */
+}
+#logo img{
+    width:5vw;
+    height:5vw;
+}
+#logo{
+    font-family: 'Satisfy', cursive;
+    font-size: 4vw;
+    color: #C82333;
+}
+.jumbotron{
+    background-color: rgba(0,0,0,0);
+}
+.title-wrap{
+    display:flex;
+    justify-content: space-between;
+}
+
+.chef-title{
+    color: rgb(143, 143, 143);
+}
+.tag{
+    border: 1px solid rgb(143, 143, 143);
+    border-radius:15%;
+    font-size: 10px;
+    padding:2px;
+}
+.left-align{
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media only screen and (max-width: 768px){
+    .navbar-collapse{
+        background-color: #D9D8DA;
+    }
+}
+
+
