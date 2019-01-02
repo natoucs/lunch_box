@@ -113,7 +113,7 @@ def delete_record(table, where):
 
 
 def is_user_exist(user):
-    if select('user_name', 'users', f"user_name={user}")[0][0]:
+    if select('user_name', 'users', f"user_name='{user}'")[0][0]:
         response.set_cookie("user_name", user)
         return True
     else:

@@ -2,9 +2,7 @@ from bottle import (get, post, request, route, run,template, static_file, jinja2
 import json
 from pymysql import connect, cursors
 from functools import partial
-from lunch_box.db_utils import (select, insert)
-from uuid import uuid4
-from db_utils import (select, insert, is_user_exist)
+from db_utils import (select, insert, is_user_exist, execute_query)
 
 
 view = partial(jinja2_view, template_lookup=['templates'])
@@ -26,12 +24,12 @@ def set_user_cookie(user):
 
 
 # setting the connection to the DB server
-# connection = connect(host='localhost',
-#                      user='ITC',
-#                      #password='nathan',
-#                      #db='store',
-#                      charset='utf8',
-#                      cursorclass=cursors.DictCursor)
+connection = connect(host='db4free.net',
+                     user='zivgos',
+                     password='6QP6N220YQU5X^l%',
+                     db='lunchbox',
+                     charset='utf8',
+                     cursorclass=cursors.DictCursor)
 
 
 # static Routes
@@ -64,7 +62,6 @@ def login():
 
 
 @post('/login')
-@view('login.html')
 def login():
     try:
         user_name = request.forms.get("user_name")
@@ -148,15 +145,43 @@ def login_route():
 
 
 @get('/dishes')
-@view('dishes.html')
-def login():
-        return {}
+def dishes():
+    try:
+        conn = connection
+        c = conn.cursor()
+        c.execute(
+            "SELECT meals.id, meals.name, meals.delivery_date,users.first_name +''+users.last_name , tags.vegan,"
+            " tags.vegetarian, tags.meat, tags.fish, tags.kosher, tags.dairy, tags.hot, tags.cold, meals.description"
+            " FROM meals"
+            " JOIN users ON users.id = meals.chef_id "
+            " JOIN tags ON tags.id = meals.id "
+            "ORDER BY delivery_date")
+        result = c.fetchall()
+        print(result)
+        status = 'SUCCESS'
+    except:
+        status = 'ERROR'
+    return json.dumps([result, {"status": status}])
 
 
-@post('/dishes')
-@view('dishes.html')
+@post('/dish/<meal_id>')
+@view('dishes.html')  # store a click into the transaction table
 def login():
-        return ()
+    # fetch the data from the front
+    try:
+        user_name = request.get_cookie('user_name')
+        # conn = connection
+        # c = conn.cursor()
+        result = execute_query(
+            "SELECT customer_id, meal_id FROM transactions JOIN users on users.id = transactions.customer_id "
+            "where users.user_name = %s" % (
+                user_name,))
+        customer_id, meal_id = result[0]
+        insert('transactions', ['customer_id', 'meal_id'], [customer_id, meal_id])
+        status = 'SUCCESS'
+    except:
+        status = 'ERROR'
+    return json.dumps('status', status)
 
 
 def main():

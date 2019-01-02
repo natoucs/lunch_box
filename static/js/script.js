@@ -18,14 +18,16 @@ LunchBox.sendLoginRequest = function (e) {
             user_name: user_name
         },
         function (result) {
-            LunchBox.directToDishes();
-        });
+            if (result["status"] == "SUCCESS"){
+                window.location.href = '/dishes'
+            } else {
+                $("#content-wrap").empty()
+                $("#content-wrap").append("<div>Something won't wrong<div/>");
+            } 
+        }, "json");
 }
 
-LunchBox.directToDishes = function () {
-    $.get("/dishes", function () {
-    })
-}
+
 
 LunchBox.sendOfferRequest = function (e) {
     e.preventDefault();
