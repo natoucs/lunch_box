@@ -57,10 +57,26 @@ def compose_update(table, data, where=None):
 # values: list
 # values and column elements must be ordered
 def insert(table, columns, values):
+    """
+    :table str
+    :columns list/tuple
+    :values list/tuple
+    :returns id of last int
+    """
+
     check_columns(columns)
     values = [values] if hasattr(values, 'lower') else values
     query = compose_insert(table, columns)
     return execute_query(query, values)
+
+
+def insert_dict(table, dictionary):
+    """
+    :table str
+    :dictionary dict
+    :returns id of last inserted row int
+    """
+    return insert(table, list(dictionary.keys()), list(dictionary.values()))
 
 
 # only use this
@@ -82,7 +98,9 @@ def execute_query(query, values=None):
 
     with pymysql.connect(**conn_params) as cursor:
         if values:
-            return cursor.execute(query, values)
+            cursor.execute(query, values)
+            print(cursor.lastrowid)
+            return cursor.lastrowid
         else:
             cursor.execute(query)
             return cursor.fetchall()
@@ -112,4 +130,22 @@ def subtract_serving(meal_id):
 
 
 def add_user(data):
-    insert('users', data.keys(), data.values())
+    """
+    :data dict
+    :returns id of last inserted row int
+    """
+    return insert('users', list(data.keys()), list(data.values()))
+
+
+def add_meal(data):
+    """
+    :param data: dictionary
+    :return: id of last added row
+    """
+    return insert_dict('meals', data)
+
+
+def add_tags(meal_id, data):
+    """ requires the id returned by add_meal"""
+    data['meal_id'] = meal_id
+    return insert_dict('tags', data)
