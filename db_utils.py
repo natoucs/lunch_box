@@ -92,3 +92,20 @@ def delete_record(table, where):
     where = stringify_where(where)
     return execute_query(f'update `{table}` set `deleted_at` = current_timestamp() where {where};')
 
+
+# servings
+def fetch_available_servings(meal_id):
+    result = select(['total_servings', 'current_servings'], 'meals', f'id={meal_id};')[0]
+    return result[0] - result[1]
+
+
+def update_servings(meal_id, value):
+    execute_query(f"update meals set current_servings = current_servings {value} where meal_id = {meal_id};")
+
+
+def add_serving(meal_id):
+    update_servings(meal_id, '+ 1')
+
+
+def subtract_serving(meal_id):
+    update_servings(meal_id, '- 1')
