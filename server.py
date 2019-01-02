@@ -1,22 +1,30 @@
-from bottle import (get, post, request, route, run,template, static_file, jinja2_view, redirect)
+from bottle import (get, post, request, route, run,template, static_file, jinja2_view, redirect, response)
 import json
 from pymysql import connect, cursors
 from functools import partial
-from db_utils import (select, insert)
+from lunch_box.db_utils import (select, insert)
 
 
 view = partial(jinja2_view, template_lookup=['templates'])
 
 
-def user_loged_in():
+def user_loged_in(user):
+    with connection.cursor() as cursor:
+        sql = "SELECT * FROM users WHERE first_name = '{}'".format(user)#need to change to user_name
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        for res in result:
+            if res['first_name'] == user:
+                #response.set_cookie("session_id",)
+                response.set_cookie("user_name", user)
     return ("somthig from cocies")
 
 
 # setting the connection to the DB server
 connection = connect(host='localhost',
-                     user='ITC',
-                     #password='nathan',
-                     #db='store',
+                     user='root',
+                     password='momo',
+                     db='lunch_box',
                      charset='utf8',
                      cursorclass=cursors.DictCursor)
 
@@ -54,14 +62,16 @@ def login():
 @view('login.html')
 def login():
     user_name = request.forms.get("user_name")
-    print(user_name)
+    user_loged_in(user_name)
     return json.dumps({"user_name": user_name})
 
 
 @get('/home')
 @view('home.html')#not working!
 def back_home():
-        return ()
+    username = request.get_cookie("user_name")
+    print(username)
+    return (username)
 
 
 @get('/signup')
