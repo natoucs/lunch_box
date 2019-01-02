@@ -12,7 +12,12 @@ def check_columns(columns):
 
 
 def stringify_columns(columns):
+    columns = [columns] if hasattr(columns, 'lower') else columns
     return '`, `'.join(columns)
+
+
+def stringify_where(where_list):
+    return ' and '.join(where_list)
 
 
 def compose_insert(table, columns):
@@ -23,19 +28,22 @@ def compose_insert(table, columns):
     return insert_query
 
 
-def compose_select(columns, table):
+def compose_select(columns, table, where):
     check_columns(columns)
     columns_str = stringify_columns(columns)
-    return f"select `{columns_str}` from `{table}`;"
+
+    where = 'where ' + stringify_where(where) if where else ''
+    return f"select `{columns_str}` from `{table}` {where};"
 
 
 def insert(table, columns, values):
+    values = [values] if hasattr(values, 'lower') else values
     query = compose_insert(table, columns)
     return execute_query(query, values)
 
 
-def select(columns, table):
-    query = compose_select(columns, table)
+def select(columns, table, where=None):
+    query = compose_select(columns, table, where)
     return execute_query(query)
 
 
