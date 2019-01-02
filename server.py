@@ -2,10 +2,27 @@ from bottle import (get, post, request, route, run,template, static_file, jinja2
 import json
 from pymysql import connect, cursors
 from functools import partial
+from lunch_box.db_utils import (select, insert)
+from uuid import uuid4
 from db_utils import (select, insert, is_user_exist)
 
 
 view = partial(jinja2_view, template_lookup=['templates'])
+
+
+def set_user_cookie(user):
+    with connection.cursor() as cursor:
+        sql = "SELECT user_name FROM users WHERE user_name = '{}'".format(user)#need to change to user_name
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        for res in result:
+            if res['user_name'] == user:
+                sessionid = str(uuid4().hex)[:8]
+                response.set_cookie("user_name", user)
+                response.set_cookie("sessionid", sessionid)
+                print(sessionid)
+    return (sessionid)
+
 
 
 # setting the connection to the DB server
@@ -62,6 +79,23 @@ def login():
 @view('login.html')
 def signup():
         return {}
+def Sign_Up():
+    user_name = request.POST.get('user_name')
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    email = request.POST.get('email')
+    password = request.POST.get('password')
+    sessionid = request.get_cookie("sessionid")
+    try:
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO users (`user_name`,`first_name`, `last_name`,`email`,`password`) VALUES('{}','{}','{}','{}')".format(
+                user_name, first_name, last_name, email, password)
+            cursor.execute(sql)
+            connection.commit()
+            redirect(sessionid)
+    except:
+        return json.dumps({'STATUS': 'ERROR', 'MSG': "error in the values adding"})
+
 
 
 @post('/signup')
