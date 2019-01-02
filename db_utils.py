@@ -122,24 +122,8 @@ def is_user_exist(user):
     else:
         return False
 
-# servings
-def fetch_available_servings(meal_id):
-    result = select(['total_servings', 'current_servings'], 'meals', f'id={meal_id};')[0]
-    return result[0] - result[1]
 
-
-def update_servings(meal_id, value):
-    execute_query(f"update meals set current_servings = current_servings {value} where meal_id = {meal_id};")
-
-
-def add_serving(meal_id):
-    update_servings(meal_id, '+ 1')
-
-
-def subtract_serving(meal_id):
-    update_servings(meal_id, '- 1')
-
-
+# adding entities
 def add_user(data):
     """
     :data dict
@@ -160,3 +144,33 @@ def add_tags(meal_id, data):
     """ requires the id returned by add_meal"""
     data['meal_id'] = meal_id
     return insert_dict('tags', data)
+
+
+# delete entities - no need for users and tags
+def delete_meal(table, id):
+    delete_record(table, id)
+
+
+def delete_transaction(id):
+    """ deletes a meal and subtract one serving from that meal's current servings """
+    meal_id = select('meal_id', 'transactions', f"id={id}")[0][0]
+    delete_record("transactions", "id={}")
+    add_serving(meal_id)
+
+
+# servings
+def fetch_available_servings(meal_id):
+    result = select(['total_servings', 'current_servings'], 'meals', f'id={meal_id};')[0]
+    return result[0] - result[1]
+
+
+def update_servings(meal_id, value):
+    execute_query(f"update meals set current_servings = current_servings {value} where meal_id = {meal_id};")
+
+
+def add_serving(meal_id):
+    update_servings(meal_id, '+ 1')
+
+
+def subtract_serving(meal_id):
+    update_servings(meal_id, '- 1')
