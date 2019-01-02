@@ -2,22 +2,10 @@ from bottle import (get, post, request, route, run,template, static_file, jinja2
 import json
 from pymysql import connect, cursors
 from functools import partial
-from db_utils import (select, insert)
+from db_utils import (select, insert, is_user_exist)
 
 
 view = partial(jinja2_view, template_lookup=['templates'])
-
-
-def user_loged_in(user):
-    with connection.cursor() as cursor:
-        sql = "SELECT * FROM users WHERE first_name = '{}'".format(user)#need to change to user_name
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        for res in result:
-            if res['first_name'] == user:
-                #response.set_cookie("session_id",)
-                response.set_cookie("user_name", user)
-    return ("somthig from cocies")
 
 
 # setting the connection to the DB server
@@ -61,23 +49,19 @@ def login():
 @post('/login')
 @view('login.html')
 def login():
-    user_name = request.forms.get("user_name")
-    user_loged_in(user_name)
-    return json.dumps({"user_name": user_name})
-
-
-@get('/home')
-@view('home.html')#not working!
-def back_home():
-    username = request.get_cookie("user_name")
-    print(username)
-    return (username)
+    try:
+        user_name = request.forms.get("user_name")
+        is_user_exist(user_name)
+        status = "SUCCESS"
+    except:
+        status = "ERROR"
+    return json.dumps({"status": status})
 
 
 @get('/signup')
 @view('login.html')
-def Sign_Up():
-        return ()
+def signup():
+        return {}
 
 
 @post('/signup')
@@ -86,8 +70,6 @@ def prosses_Sign_Up():
         return ()
 
 
-# Potentially not necessary as already done through the dishes page. See with Hila later.
-# Front wants to get information on the offers
 @get('/offer')
 @view('offer.html')
 def login_route():

@@ -1,4 +1,5 @@
 import pymysql
+from bottle import response
 
 conn_params = {"user": 'zivgos',
                "password": '6QP6N220YQU5X^l%',
@@ -36,11 +37,11 @@ def compose_insert(table, columns):
     return insert_query
 
 
-def compose_select(columns, table, where, order_by):
+def compose_select(columns, table, where, order_by=None):
     columns_str = stringify_columns(columns)
 
     where = 'where ' + stringify_where(where) if where else ''
-    order_by_str = 'order by ' + stringify_order_by(order_by)
+    order_by_str = 'order by ' + stringify_order_by(order_by) if order_by else ''
     return f"select `{columns_str}` from `{table}` {where} {order_by_str};"
 
 
@@ -92,6 +93,13 @@ def delete_record(table, where):
     where = stringify_where(where)
     return execute_query(f'update `{table}` set `deleted_at` = current_timestamp() where {where};')
 
+
+def is_user_exist(user):
+    if select('user_name', 'users', f"user_name={user}")[0][0]:
+        response.set_cookie("user_name", user)
+        return True
+    else:
+        return False
 
 # servings
 def fetch_available_servings(meal_id):
