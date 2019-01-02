@@ -70,8 +70,12 @@
             <p class="lead">The most convenient way to find partners for your lunch</p>
             <hr class="my-4">
             <p>Login for offering or joinning a meal</p>
-            <a class="btn btn-outline-danger" href="#" role="button">Login</a>
-            <a class="btn btn-outline-danger" href="#" role="button">Sign-Up</a>
+            <form method="get" action="/login">
+                <a class="btn btn-outline-danger" type="submit" href="/login" role="button">Login</a>
+            </form>
+            <form method="get" action="/Sign_Up">
+                <a class="btn btn-outline-danger" type="submit" href="/Sign_Up" role="button">Sign-Up</a>
+            </form>
         </div>
     </div>
     {% endblock %}
