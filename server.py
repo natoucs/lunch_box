@@ -3,24 +3,21 @@ import json
 from pymysql import connect, cursors
 from functools import partial
 from lunch_box.db_utils import (select, insert)
-from uuid import uuid4
 
 
 view = partial(jinja2_view, template_lookup=['templates'])
 
 
-def set_user_cookie(user):
+def user_loged_in(user):
     with connection.cursor() as cursor:
-        sql = "SELECT user_name FROM users WHERE user_name = '{}'".format(user)#need to change to user_name
+        sql = "SELECT * FROM users WHERE first_name = '{}'".format(user)#need to change to user_name
         cursor.execute(sql)
         result = cursor.fetchall()
         for res in result:
-            if res['user_name'] == user:
-                sessionid = str(uuid4().hex)[:8]
+            if res['first_name'] == user:
+                #response.set_cookie("session_id",)
                 response.set_cookie("user_name", user)
-                response.set_cookie("sessionid", sessionid)
-                print(sessionid)
-    return (sessionid)
+    return ("somthig from cocies")
 
 
 # setting the connection to the DB server
@@ -65,7 +62,7 @@ def login():
 @view('login.html')
 def login():
     user_name = request.forms.get("user_name")
-    set_user_cookie(user_name)
+    user_loged_in(user_name)
     return json.dumps({"user_name": user_name})
 
 
@@ -86,25 +83,12 @@ def Sign_Up():
 @post('/signup')
 @view('login.html')
 def prosses_Sign_Up():
-    user_name = request.POST.get('user_name')
-    first_name = request.POST.get('first_name')
-    last_name = request.POST.get('last_name')
-    email = request.POST.get('email')
-    password = request.POST.get('password')
-    sessionid = request.get_cookie("sessionid")
-    try:
-        with connection.cursor() as cursor:
-            sql = "INSERT INTO users (`user_name`,`first_name`, `last_name`,`email`,`password`) VALUES('{}','{}','{}','{}')".format(user_name,first_name,last_name,email,password)
-            cursor.execute(sql)
-            connection.commit()
-            redirect(sessionid)
-    except:
-        return json.dumps({'STATUS':'ERROR', 'MSG':"error in the values adding"})
+        return ()
 
 
 # Potentially not necessary as already done through the dishes page. See with Hila later.
 # Front wants to get information on the offers
-@get('/offer')
+@get('/pffer')
 @view('offer.html')
 def login_route():
         return ()
