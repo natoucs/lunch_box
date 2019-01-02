@@ -2,7 +2,7 @@ from bottle import (get, post, request, route, run,template, static_file, jinja2
 import json
 from pymysql import connect, cursors
 from functools import partial
-from db_utils import (select, insert, is_user_exist, execute_query)
+from db_utils import (select, insert, is_user_exist, execute_query, add_meal, add_tags)
 
 
 view = partial(jinja2_view, template_lookup=['templates'])
@@ -21,15 +21,6 @@ def set_user_cookie(user):
                 print(sessionid)
     return (sessionid)
 
-
-
-# setting the connection to the DB server
-connection = connect(host='db4free.net',
-                     user='zivgos',
-                     password='6QP6N220YQU5X^l%',
-                     db='lunchbox',
-                     charset='utf8',
-                     cursorclass=cursors.DictCursor)
 
 
 # static Routes
@@ -101,41 +92,47 @@ def prosses_Sign_Up():
         return ()
 
 
+# Displays the page where you fill the form ('offer.html')
 @get('/offer')
 @view('offer.html')
 def login_route():
         return {}
 
+
 # Front-end wants to insert in the database an offer from a cook
 @post('/offer')
 def login_route():
-    user_id = 1 # fake until it works
-    description = request.forms.get("description")
-    number = request.forms.get("number")
-    date = request.forms.get("date")
-    name = request.forms.get("name")
+    dict_meal = {  # keys NEED to be the column name in the database
+        'chef_id': request.get_cookie('user_id'),  # fake until it works (fetch cookie/session_id)
+        'description': request.forms.get("description"),
+        'number': request.forms.get("number"),
+        'date': request.forms.get("date"),
+        'name': request.forms.get("name"),
+    }
 
-    # later
-    kosher = request.forms.get("kosher")
-    vegetarian = request.forms.get("vegetarian")
-    vegan = request.forms.get("vegan")
-    meat = request.forms.get("meat")
-    fish = request.forms.get("fish")
-    hot = request.forms.get("hot")
-    cold = request.forms.get("cold")
+    dict_tags = {
+        'kosher': request.forms.get("kosher"),
+        'vegetarian': request.forms.get("vegetarian"),
+        'vegan': request.forms.get("vegan"),
+        'meat': request.forms.get("meat"),
+        'fish': request.forms.get("fish"),
+        'dairy': request.forms.get("dairy"),
+        'hot': request.forms.get("hot"),
+        'cold': request.forms.get("cold")
+    }
+
+    # to do later
     image = request.forms.get("image")
 
     try:
-        insert('meals',
-               ['chef_id', 'description', 'total_servings', 'delivery_date', 'name'],
-               [user_id, description, number, date, name])
+        meal_id = add_meal(dict_meal)  # inserts new meal into database and returns its ID
+        add_tags(meal_id, dict_tags)  # uses the previous meal ID to add the tags of the meal
         status = 'SUCCESS'
-    except Exception as e:
-        print(e)
+    except Exception as error:
+        print(error)
         status = 'ERROR'
 
     return json.dumps({'status': status})
-
 
 
 @get('/myaccount')
