@@ -17,7 +17,13 @@ body{
 }
 #content-wrap{
     position: absolute;
-    top:7vw;
+    top: 4.5rem;
+    padding:5%;
+    margin: 0 auto;
+}
+#content-wrap-offer{
+    position: absolute;
+    top: 2.5rem;
     padding:5%;
     margin: 0 auto;
 }
@@ -25,23 +31,32 @@ body{
     background-color: none;
     /* box-shadow: 0px 3px 18px -1px rgba(0,0,0,0.48); */
 }
+/* .top-of-page{
+    background-color: black;
+} */
 #logo img{
-    width:5vw;
-    height:5vw;
+    width: 2.5rem;
+    height: 2.5rem;
 }
 #logo{
     font-family: 'Satisfy', cursive;
-    font-size: 4vw;
+    font-size: 2rem;
     color: #C82333;
 }
 .jumbotron{
     background-color: rgba(0,0,0,0);
 }
+.display-4{
+    font-size: 3.2rem;
+}
+/* .check-wrap{
+    grid-template-rows: auto;
+} */
 .title-wrap{
     display:flex;
+    flex-direction: column;
     justify-content: space-between;
 }
-
 .chef-title{
     color: rgb(143, 143, 143);
 }

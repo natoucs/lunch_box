@@ -153,18 +153,17 @@ def dishes():
             " JOIN tags ON tags.id = meals.id "
             "ORDER BY delivery_date")
         result = c.fetchall()
-        print(result)
         final = []
-
         for dict_ in result:
             dict_['tags'] = [key for key, value in dict_.items() if value == 1]
+            #TO REMOVE:
+            # dict_["image"] = 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=985&q=80'
         for dict_ in result:
             key_to_remove = ["vegan", "vegetarian", "meat", "fish", "kosher", "cold", "dairy", "hot"]
             for element in key_to_remove:
                 if element in dict_.keys():
                     del dict_[element]
             final.append(dict_)
-        print(final)
     except:
         status = 'ERROR'
         return json.dumps({'status': status})

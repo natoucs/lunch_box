@@ -8,6 +8,14 @@ LunchBox.bindEvents = function () {
     $("#login").submit(LunchBox.sendLoginRequest);
     $("#offer").submit(LunchBox.sendOfferRequest);
     $(".join").bind(LunchBox.joinAMeal);
+    // $(window).on("scroll", function() {
+    //     var scrollPos = $(window).scrollTop();
+    //     if (scrollPos <= 0) {
+    //         $('.navbar').removeClass('top-of-page');
+    //     } else {
+    //         $('.navbar').addClass('top-of-page');
+    //     }
+    // });
 }
 
 LunchBox.sendLoginRequest = function (e) {

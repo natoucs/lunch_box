@@ -52,10 +52,10 @@
                     <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/dishes">Join</a>
+                    <a class="nav-link" href="/dishes">Join A Lunch</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/offer">Offer</a>
+                    <a class="nav-link" href="/offer">Offer A Lunch</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/myaccount">My Acount</a>
@@ -72,18 +72,13 @@
             <h1 class="display-4">Welcome to LunchBox</h1>
             <p class="lead">The most convenient way to find partners for your lunch</p>
             <hr class="my-4">
-            <p>Login for offering or joinning a meal</p>
         </div>
         <form action="/login" method="POST" id="login">
             <div class="form-group">
                 <label for="userName">User Name:</label>
-                <input type="text" class="form-control" id="userName" name="user_name" >
+                <input type="text" class="form-control" id="userName" name="user_name">
             </div>
-            <div class="left-align">
-                <button type="submit" class="btn btn-outline-danger">Login</button>
-                <div>Didn't signed- up yet?</div>
-            <button class="btn btn-outline-danger">Sign-up</button>
-            </div>
+            <button type="submit" class="btn btn-outline-danger">Login</button>
         </form>
     </div>
     {% endblock %}

@@ -4,16 +4,16 @@
     <div class="card-deck">
         {% for dish in dishes %}
         <div class="card" style="width: 18rem;">
-            <img class="card-img-top dish-img" src="" alt="Card image cap">
+            <img class="card-img-top dish-img" src="{{dish.image}}" alt="Card image cap">
             <div class="card-body">
-                <input type="hidden" name="meal-id" id="meal-id" value="{{dish.id}}"/>
+                <input type="hidden" name="meal-id" value='images/eaters-collective-132773-unsplash.src'/>
                 <div class="title-wrap">
-                    <h5 class="card-title">{{dish.name}}</h5>
+                    <h5 class="card-title">{{dish.name}}</h5><br>
                     <h5> {{dish.date}} </h5>
                     <div> {{dish.chef}} </div>
                 </div>
                 {% for tag in dish.tags %}
-                <span class="tag">tag</span>
+                <span class="tag">{{tag}}</span>
                 {% endfor %}
                 <div class="chef-title">{{dish.chef}}</div>
                 <p class="card-text">{{dish.description}}</p>
