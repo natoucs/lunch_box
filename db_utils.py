@@ -1,5 +1,6 @@
 import pymysql
 from bottle import response
+from uuid import uuid4
 
 conn_params = {"user": 'zivgos',
                "password": '6QP6N220YQU5X^l%',
@@ -115,6 +116,8 @@ def delete_record(table, where):
 def is_user_exist(user):
     if select('user_name', 'users', f"user_name='{user}'")[0][0]:
         response.set_cookie("user_name", user)
+        sessionid = str(uuid4().hex)[:8]
+        response.set_cookie("sessionid", sessionid)
         return True
     else:
         return False

@@ -7,20 +7,13 @@ from db_utils import (select, insert, is_user_exist, execute_query, add_meal, ad
 
 view = partial(jinja2_view, template_lookup=['templates'])
 
-
-def set_user_cookie(user):
-    with connection.cursor() as cursor:
-        sql = "SELECT user_name FROM users WHERE user_name = '{}'".format(user)#need to change to user_name
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        for res in result:
-            if res['user_name'] == user:
-                sessionid = str(uuid4().hex)[:8]
-                response.set_cookie("user_name", user)
-                response.set_cookie("sessionid", sessionid)
-                print(sessionid)
-    return (sessionid)
-
+# setting the connection to the DB server
+connection = connect(host='db4free.net',
+                     user='zivgos',
+                     password='6QP6N220YQU5X^l%',
+                     db='lunchbox',
+                     charset='utf8',
+                     cursorclass=cursors.DictCursor)
 
 
 # static Routes
@@ -56,8 +49,10 @@ def login():
 def login():
     try:
         user_name = request.forms.get("user_name")
-        is_user_exist(user_name)
-        status = "SUCCESS"
+        if is_user_exist(user_name):
+            redirect('/dishes')
+        else:
+            status = "ERROR"
     except:
         status = "ERROR"
     return json.dumps({"status": status})
@@ -98,7 +93,6 @@ def prosses_Sign_Up():
 def login_route():
         return {}
 
-
 # Front-end wants to insert in the database an offer from a cook
 @post('/offer')
 def login_route():
@@ -135,6 +129,7 @@ def login_route():
     return json.dumps({'status': status})
 
 
+
 @get('/myaccount')
 @view('login.html')
 def login_route():
@@ -142,6 +137,7 @@ def login_route():
 
 
 @get('/dishes')
+@view('dishes.html')
 def dishes():
     try:
         conn = connection

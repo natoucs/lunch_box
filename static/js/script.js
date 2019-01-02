@@ -18,12 +18,10 @@ LunchBox.sendLoginRequest = function (e) {
             user_name: user_name
         },
         function (result) {
-            if (result["status"] == "SUCCESS"){
-                window.location.href = '/dishes'
-            } else {
+            if (result["status"] == "ERROR"){
                 $("#content-wrap").empty()
                 $("#content-wrap").append("<div>Something won't wrong<div/>");
-            } 
+            }
         }, "json");
 }
 
