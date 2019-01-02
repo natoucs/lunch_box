@@ -1,75 +1,28 @@
 {% extends "home.html" %}
 {% block content %}
-<div class="content-wrap">
+<div id="content-wrap">
     <div class="card-deck">
+        {% for dish in dishes %}
         <div class="card" style="width: 18rem;">
             <img class="card-img-top dish-img" src="static/images/eaters-collective-132773-unsplash.jpg" alt="Card image cap">
             <div class="card-body">
+                <input type="hidden" name="meal-id" id="meal-id" value="{{dish.id}}"/>
                 <div class="title-wrap">
-                    <h5 class="card-title">Pasta tomato</h5>
-                    <h5> 12/12/18 </h5>
+                    <h5 class="card-title">{{dish.name}}</h5>
+                    <h5> {{dish.date}} </h5>
+                    <div> {{dish.chef}} </div>
                 </div>
-                <span class="tag">Kosher</span>
-                <span class="tag">Vegeterian</span>
-                <span class="tag">Vegan</span>
-                <div class="chef-title">Israel Israeli</div>
-                <p class="card-text">The classic italian dish. Pasta with tomato sauce, garlic and basil.</p>
+                {% for tag in dish.tags %}
+                <span class="tag">tag</span>
+                {% endfor %}
+                <div class="chef-title">{{dish.chef}}</div>
+                <p class="card-text">{{dish.description}}</p>
                 <div class="left-align">
-                    <a href="#" class="btn btn-outline-danger">Join</a>
+                    <button class="btn btn-outline-danger" id="join" >Join</button>
                 </div>
             </div>
         </div>
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top dish-img" src="static/images/eaters-collective-132773-unsplash.jpg" alt="Card image cap">
-            <div class="card-body">
-                <div class="title-wrap">
-                    <h5 class="card-title">Pasta tomato</h5>
-                    <h5> 12/12/18 </h5>
-                </div>
-                <span class="tag">Kosher</span>
-                <span class="tag">Vegeterian</span>
-                <span class="tag">Vegan</span>
-                <div class="chef-title">Israel Israeli</div>
-                <p class="card-text">The classic italian dish. Pasta with tomato sauce, garlic and basil.</p>
-                <div class="left-align">
-                    <a href="#" class="btn btn-outline-danger">Join</a>
-                </div>
-            </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top dish-img" src="static/images/eaters-collective-132773-unsplash.jpg" alt="Card image cap">
-            <div class="card-body">
-                <div class="title-wrap">
-                    <h5 class="card-title">Pasta tomato</h5>
-                    <h5> 12/12/18 </h5>
-                </div>
-                <span class="tag">Kosher</span>
-                <span class="tag">Vegeterian</span>
-                <span class="tag">Vegan</span>
-                <div class="chef-title">Israel Israeli</div>
-                <p class="card-text">The classic italian dish. Pasta with tomato sauce, garlic and basil.</p>
-                <div class="left-align">
-                    <a href="#" class="btn btn-outline-danger">Join</a>
-                </div>
-            </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top dish-img" src="static/images/eaters-collective-132773-unsplash.jpg" alt="Card image cap">
-            <div class="card-body">
-                <div class="title-wrap">
-                    <h5 class="card-title">Pasta tomato</h5>
-                    <h5> 12/12/18 </h5>
-                </div>
-                <span class="tag">Kosher</span>
-                <span class="tag">Vegeterian</span>
-                <span class="tag">Vegan</span>
-                <div class="chef-title">Israel Israeli</div>
-                <p class="card-text">The classic italian dish. Pasta with tomato sauce, garlic and basil.</p>
-                <div class="left-align">
-                    <a href="#" class="btn btn-outline-danger">Join</a>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

@@ -2,7 +2,7 @@ from bottle import (get, post, request, route, run,template, static_file, jinja2
 import json
 from pymysql import connect, cursors
 from functools import partial
-from lunch_box.db_utils import (select, insert)
+from db_utils import (select, insert)
 
 
 view = partial(jinja2_view, template_lookup=['templates'])
@@ -21,12 +21,12 @@ def user_loged_in(user):
 
 
 # setting the connection to the DB server
-connection = connect(host='localhost',
-                     user='root',
-                     password='momo',
-                     db='lunch_box',
-                     charset='utf8',
-                     cursorclass=cursors.DictCursor)
+# connection = connect(host='localhost',
+#                      user='ITC',
+#                      #password='nathan',
+#                      #db='store',
+#                      charset='utf8',
+#                      cursorclass=cursors.DictCursor)
 
 
 # static Routes
@@ -88,21 +88,21 @@ def prosses_Sign_Up():
 
 # Potentially not necessary as already done through the dishes page. See with Hila later.
 # Front wants to get information on the offers
-@get('/pffer')
+@get('/offer')
 @view('offer.html')
 def login_route():
-        return ()
+        return {}
 
 # Front-end wants to insert in the database an offer from a cook
 @post('/offer')
-@view('offer.html')
 def login_route():
-    date = request.forms.get("date")
+    user_id = 1 # fake until it works
     description = request.forms.get("description")
     number = request.forms.get("number")
-
-    # will use later
+    date = request.forms.get("date")
     name = request.forms.get("name")
+
+    # later
     kosher = request.forms.get("kosher")
     vegetarian = request.forms.get("vegetarian")
     vegan = request.forms.get("vegan")
@@ -114,10 +114,11 @@ def login_route():
 
     try:
         insert('meals',
-               ['description', 'total_servings', 'delivery_date'],
-                [description, number, date])
+               ['chef_id', 'description', 'total_servings', 'delivery_date', 'name'],
+               [user_id, description, number, date, name])
         status = 'SUCCESS'
-    except:
+    except Exception as e:
+        print(e)
         status = 'ERROR'
 
     return json.dumps({'status': status})
@@ -133,7 +134,7 @@ def login_route():
 @get('/dishes')
 @view('dishes.html')
 def login():
-        return ()
+        return {}
 
 
 @post('/dishes')
