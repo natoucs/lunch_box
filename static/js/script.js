@@ -7,7 +7,7 @@ LunchBox.init = function () {
 LunchBox.bindEvents = function () {
     $("#login").submit(LunchBox.sendLoginRequest);
     $("#offer").submit(LunchBox.sendOfferRequest);
-    $("#join").bind(LunchBox.joinAMeal);
+    $(".join").bind(LunchBox.joinAMeal);
 }
 
 LunchBox.sendLoginRequest = function (e) {
@@ -37,10 +37,11 @@ LunchBox.sendOfferRequest = function (e) {
     let vegan = $("#vegan").is(":checked")
     let meat = $("#meat").is(":checked")
     let fish = $("#fish").is(":checked")
+    let dairy = $("#dairy").is(":checked")
     let hot = $("#hot").is(":checked")
     let cold = $("#cold").is(":checked")
     let number = $("#number").val()
-    let image = $("#image").val();
+    // let image = Null
     $.post("/offer",
         {
             name: name,
@@ -51,10 +52,11 @@ LunchBox.sendOfferRequest = function (e) {
             vegan: vegan,
             meat: meat,
             fish: fish,
+            dairy: dairy,
             hot: hot,
             cold: cold,
             number: number,
-            image: image
+            // image: image
         },
         function (result) {
             if (result["status"] == "SUCCESS") {
@@ -70,7 +72,7 @@ LunchBox.sendOfferRequest = function (e) {
 
 LunchBox.joinAMeal = function() {
     mealId = $("#meal-id").val();
-    $.get(`/dish/${mealId}`,
+    $.post(`/dish/${mealId}`,
     function (result) {
         if (result["status"] == "SUCCESS") {
             $("#content-wrap").empty()
@@ -81,6 +83,16 @@ LunchBox.joinAMeal = function() {
             $("#content-wrap").append("<div>Something won't wrong<div/>");
         }
     }, "json");
+}
+
+function encodeImageFileAsURL(element) {
+    var file = element.files[0];
+    var reader = new FileReader();
+    reader.onloadend = function() {
+        LunchBox.img = reader.result;
+        console.log('RESULT', reader.result)
+    }
+    reader.readAsDataURL(file);
 }
 
 $(document).ready(function () {

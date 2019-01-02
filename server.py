@@ -1,8 +1,9 @@
-from bottle import (get, post, request, route, run,template, static_file, jinja2_view, redirect, response)
+from bottle import (get, post, request, route, run,template, static_file, jinja2_view, redirect, response, HTTPError)
 import json
 from pymysql import connect, cursors
 from functools import partial
 from db_utils import (select, insert, is_user_exist, execute_query, add_meal, add_tags)
+from uuid import uuid4
 
 
 view = partial(jinja2_view, template_lookup=['templates'])
@@ -50,10 +51,15 @@ def login():
     try:
         user_name = request.forms.get("user_name")
         if is_user_exist(user_name):
+            user_id = select('id', 'users', f"user_name='{user_name}'")[0][0]
+            response.set_cookie("user_id", str(user_id))
+            sessionid = str(uuid4().hex)[:8]
+            response.set_cookie("sessionid", sessionid)
             redirect('/dishes')
         else:
             status = "ERROR"
-    except:
+    except Exception as e:
+        print(e)
         status = "ERROR"
     return json.dumps({"status": status})
 
@@ -99,31 +105,28 @@ def login_route():
     dict_meal = {  # keys NEED to be the column name in the database
         'chef_id': request.get_cookie('user_id'),  # fake until it works (fetch cookie/session_id)
         'description': request.forms.get("description"),
-        'number': request.forms.get("number"),
-        'date': request.forms.get("date"),
+        'total_servings': request.forms.get("number"),
+        'delivery_date': request.forms.get("date"),
         'name': request.forms.get("name"),
+        'image': None
     }
 
     dict_tags = {
-        'kosher': request.forms.get("kosher"),
-        'vegetarian': request.forms.get("vegetarian"),
-        'vegan': request.forms.get("vegan"),
-        'meat': request.forms.get("meat"),
-        'fish': request.forms.get("fish"),
-        'dairy': request.forms.get("dairy"),
-        'hot': request.forms.get("hot"),
-        'cold': request.forms.get("cold")
+        'kosher': 1 if request.forms.get("kosher") == 'true' else 0,
+        'vegetarian': 1 if request.forms.get("vegetarian") == "true" else 0,
+        'vegan': 1 if request.forms.get("vegan") == 'true' else 0,
+        'meat': 1 if request.forms.get("meat") == 'true' else 0,
+        'fish': 1 if request.forms.get("fish") == 'true' else 0,
+        'dairy': 1 if request.forms.get("dairy") == 'true' else 0,
+        'hot': 1 if request.forms.get("hot") == 'true' else 0,
+        'cold': 1 if request.forms.get("cold") == 'true' else 0
     }
-
-    # to do later
-    image = request.forms.get("image")
 
     try:
         meal_id = add_meal(dict_meal)  # inserts new meal into database and returns its ID
         add_tags(meal_id, dict_tags)  # uses the previous meal ID to add the tags of the meal
         status = 'SUCCESS'
-    except Exception as error:
-        print(error)
+    except:
         status = 'ERROR'
 
     return json.dumps({'status': status})
@@ -143,7 +146,7 @@ def dishes():
         conn = connection
         c = conn.cursor()
         c.execute(
-            "SELECT meals.id, meals.name, meals.delivery_date,users.first_name +''+users.last_name , tags.vegan,"
+            "SELECT meals.id, meals.name ,meals.image, CAST(meals.delivery_date AS char(10)) as date,CONCAT(users.first_name , ' ', users.last_name) as full_name , tags.vegan,"
             " tags.vegetarian, tags.meat, tags.fish, tags.kosher, tags.dairy, tags.hot, tags.cold, meals.description"
             " FROM meals"
             " JOIN users ON users.id = meals.chef_id "
@@ -151,30 +154,39 @@ def dishes():
             "ORDER BY delivery_date")
         result = c.fetchall()
         print(result)
-        status = 'SUCCESS'
+        final = []
+
+        for dict_ in result:
+            dict_['tags'] = [key for key, value in dict_.items() if value == 1]
+        for dict_ in result:
+            key_to_remove = ["vegan", "vegetarian", "meat", "fish", "kosher", "cold", "dairy", "hot"]
+            for element in key_to_remove:
+                if element in dict_.keys():
+                    del dict_[element]
+            final.append(dict_)
+        print(final)
     except:
         status = 'ERROR'
-    return json.dumps([result, {"status": status}])
+        return json.dumps({'status': status})
+    return {"dishes": final}
+
 
 
 @post('/dish/<meal_id>')
-@view('dishes.html')  # store a click into the transaction table
-def login():
+def dish(meal_id):
     # fetch the data from the front
     try:
-        user_name = request.get_cookie('user_name')
-        # conn = connection
-        # c = conn.cursor()
-        result = execute_query(
-            "SELECT customer_id, meal_id FROM transactions JOIN users on users.id = transactions.customer_id "
-            "where users.user_name = %s" % (
-                user_name,))
+        user_id = request.get_cookie('user_id')
+        result = execute_query("SELECT customer_id, meal_id FROM transactions JOIN "
+                               "users on users.id = transactions.customer_id where users.id = %s" % user_id)
         customer_id, meal_id = result[0]
         insert('transactions', ['customer_id', 'meal_id'], [customer_id, meal_id])
         status = 'SUCCESS'
-    except:
+    except Exception as e:
+        print(e)
         status = 'ERROR'
-    return json.dumps('status', status)
+    return json.dumps({'status': status})
+
 
 
 def main():
@@ -183,3 +195,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
