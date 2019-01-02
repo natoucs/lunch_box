@@ -26,6 +26,9 @@
     <!--Google Fonts-->
     <link href="https://fonts.googleapis.com/css?family=Acme|Nunito|Satisfy" rel="stylesheet">
 
+    <!--JQUERY SCRIPT-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
     <!-- My JS -->
     <script src="js/script.js"></script>
 
@@ -46,16 +49,16 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Join</a>
+                    <a class="nav-link" href="/signup">Join</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Offer</a>
+                    <a class="nav-link" href="/offer">Offer</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">My Acount</a>
+                    <a class="nav-link" href="/myaccount">My Acount</a>
                 </li>
             </ul>
             <span class="navbar-text"> </span>
@@ -63,31 +66,27 @@
     </nav>
 
     <!--CONTENT BLOCK-->
-    <!-- {% block content %} -->
-    <div class="content-wrap">
+    {% block content %}
+    <div id="content-wrap">
         <div class="jumbotron">
             <h1 class="display-4">Welcome to LunchBox</h1>
             <p class="lead">The most convenient way to find partners for your lunch</p>
             <hr class="my-4">
             <p>Login for offering or joinning a meal</p>
-            <a class="btn btn-outline-danger" href="#" role="button">Login</a>
-            <a class="btn btn-outline-danger" href="#" role="button">Sign-Up</a>
         </div>
-        <form>
+        <form action="/login" method="POST" id="login">
             <div class="form-group">
-                <label for="firstName">User Name:</label>
-                <input type="text" class="form-control" id="userName" >
+                <label for="userName">User Name:</label>
+                <input type="text" class="form-control" id="userName" name="user_name" >
             </div>
-            <!-- <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
-            </div> -->
             <div class="left-align">
                 <button type="submit" class="btn btn-outline-danger">Login</button>
+                <div>Didn't signed- up yet?</div>
+            <button class="btn btn-outline-danger">Sign-up</button>
             </div>
         </form>
     </div>
-    <!-- {% endblock %} -->
+    {% endblock %}
 
 </body>
 

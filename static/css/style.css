@@ -15,7 +15,7 @@ body::after{
 body{
     font-family: 'Nunito', sans-serif;
 }
-.content-wrap{
+#content-wrap{
     position: absolute;
     top:7vw;
     padding:5%;

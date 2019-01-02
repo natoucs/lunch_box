@@ -14,7 +14,7 @@ def user_loged_in():
 # setting the connection to the DB server
 connection = connect(host='localhost',
                      user='root',
-                     password='momo',
+                     password='hilla',
                      db='store',
                      charset='utf8',
                      cursorclass=cursors.DictCursor)
@@ -53,8 +53,8 @@ def login():
 @view('login.html')
 def login():
     user_name = request.forms.get("user_name")
-    #check if user exists
-    return ()
+    print(user_name)
+    return json.dumps({"user_name": user_name})
 
 
 @get('/home')
@@ -63,31 +63,31 @@ def back_home():
         return ()
 
 
-@get('/Sign_Up')
+@get('/sign_Up')
 @view('login.html')
 def Sign_Up():
         return ()
 
 
-@post('/Sign_Up')
+@post('/signup')
 @view('login.html')
 def prosses_Sign_Up():
         return ()
 
 
-@get('/Offer')
+@get('/offer')
 @view('offer.html')
 def login_route():
         return ()
 
 
-@post('/Offer')
+@post('/offer')
 @view('offer.html')
 def login_route():
         return ()
 
 
-@get('/My_Acount')
+@get('/myacount')
 @view('login.html')
 def login_route():
         return ()
