@@ -36,12 +36,17 @@ def compose_select(columns, table, where):
     return f"select `{columns_str}` from `{table}` {where};"
 
 
+# only use this
+# table: string
+# columns: list
+# values: list
+# values and column elements must be ordered
 def insert(table, columns, values):
     values = [values] if hasattr(values, 'lower') else values
     query = compose_insert(table, columns)
     return execute_query(query, values)
 
-
+# only use this
 def select(columns, table, where=None):
     query = compose_select(columns, table, where)
     return execute_query(query)

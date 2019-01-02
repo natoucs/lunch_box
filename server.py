@@ -2,6 +2,7 @@ from bottle import (get, post, request, route, run,template, static_file, jinja2
 import json
 from pymysql import connect, cursors
 from functools import partial
+from db_utils import (select, insert)
 
 
 view = partial(jinja2_view, template_lookup=['templates'])
@@ -13,9 +14,9 @@ def user_loged_in():
 
 # setting the connection to the DB server
 connection = connect(host='localhost',
-                     user='root',
-                     password='hilla',
-                     db='store',
+                     user='ITC',
+                     #password='nathan',
+                     #db='store',
                      charset='utf8',
                      cursorclass=cursors.DictCursor)
 
@@ -63,7 +64,7 @@ def back_home():
         return ()
 
 
-@get('/sign_Up')
+@get('/signup')
 @view('login.html')
 def Sign_Up():
         return ()
@@ -75,19 +76,45 @@ def prosses_Sign_Up():
         return ()
 
 
-@get('/offer')
+# Potentially not necessary as already done through the dishes page. See with Hila later.
+# Front wants to get information on the offers
+@get('/pffer')
 @view('offer.html')
 def login_route():
         return ()
 
-
+# Front-end wants to insert in the database an offer from a cook
 @post('/offer')
 @view('offer.html')
 def login_route():
-        return ()
+    date = request.forms.get("date")
+    description = request.forms.get("description")
+    number = request.forms.get("number")
+
+    # will use later
+    name = request.forms.get("name")
+    kosher = request.forms.get("kosher")
+    vegetarian = request.forms.get("vegetarian")
+    vegan = request.forms.get("vegan")
+    meat = request.forms.get("meat")
+    fish = request.forms.get("fish")
+    hot = request.forms.get("hot")
+    cold = request.forms.get("cold")
+    image = request.forms.get("image")
+
+    try:
+        insert('meals',
+               ['description', 'total_servings', 'delivery_date'],
+                [description, number, date])
+        status = 'SUCCESS'
+    except:
+        status = 'ERROR'
+
+    return json.dumps({'status': status})
 
 
-@get('/myacount')
+
+@get('/myaccount')
 @view('login.html')
 def login_route():
         return ()
@@ -103,10 +130,6 @@ def login():
 @view('dishes.html')
 def login():
         return ()
-
-
-
-
 
 
 def main():
