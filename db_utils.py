@@ -109,3 +109,7 @@ def add_serving(meal_id):
 
 def subtract_serving(meal_id):
     update_servings(meal_id, '- 1')
+
+
+def add_user(data):
+    insert('users', data.keys(), data.values())
