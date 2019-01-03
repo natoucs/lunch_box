@@ -72,6 +72,19 @@ body{
 .left-align{
     display: flex;
     justify-content: flex-end;
+    margin-top: 1rem;
+}
+.navbar-nav .nav-link{
+    padding-left: 5px;
+}
+.check-wrap{
+    display: flex;
+}
+.form-check{
+    width: 50%;
+}
+.form-group {
+    margin-bottom: 0.5rem;
 }
 
 @media only screen and (max-width: 768px){

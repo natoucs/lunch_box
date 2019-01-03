@@ -8,45 +8,49 @@
         </div>
         <div class="form-group">
             <label for="date">Date:</label>
-            <input type="date" class="form-control" id="date" required />
+            <input type="text" class="form-control" id="date" onfocus="(this.type='date')" required />
         </div>
         <div class="form-group">
             <label for="description">Description:</label>
-            <textarea class="form-control" id="description" rows="3"></textarea>
+            <textarea class="form-control" id="description" rows="2"></textarea>
         </div>
         <div class="check-wrap">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="kosher">
-                <label class="form-check-label" for="kosher"> Kosher </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="vegetarian">
-                <label class="form-check-label" for="vegetarian"> Vegetarian </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="vegan">
-                <label class="form-check-label" for="vegan"> Vegan </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="meat">
-                <label class="form-check-label" for="meat"> Meat </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="fish">
-                <label class="form-check-label" for="fish"> Fish </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="dairy">
-                <label class="form-check-label" for="dairy"> Dairy </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="hot">
-                <label class="form-check-label" for="hot"> Hot </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="cold">
-                <label class="form-check-label" for="cold"> Cold </label>
-            </div>
+            <ul>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="kosher">
+                    <label class="form-check-label" for="kosher"> Kosher </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="vegetarian">
+                    <label class="form-check-label" for="vegetarian"> Vegetarian </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="vegan">
+                    <label class="form-check-label" for="vegan"> Vegan </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="meat">
+                    <label class="form-check-label" for="meat"> Meat </label>
+                </div>
+            </ul>
+            <ul>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="fish">
+                    <label class="form-check-label" for="fish"> Fish </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="dairy">
+                    <label class="form-check-label" for="dairy"> Dairy </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="hot">
+                    <label class="form-check-label" for="hot"> Hot </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cold">
+                    <label class="form-check-label" for="cold"> Cold </label>
+                </div>
+            </ul>
         </div>
 
         <div class="form-group">
