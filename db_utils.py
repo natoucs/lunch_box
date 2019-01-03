@@ -2,9 +2,9 @@ import pymysql
 from bottle import response
 from uuid import uuid4
 
-conn_params = {"user": 'zivgos',
-               "password": '6QP6N220YQU5X^l%',
-               "host": 'db4free.net',
+conn_params = {"user": 'root',
+               "password": 'hilla',
+               "host": 'localhost',
                "database": "lunchbox"}
 
 

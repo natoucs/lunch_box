@@ -1,4 +1,4 @@
-from bottle import (get, post, request, route, run,template, static_file, jinja2_view, redirect, response, HTTPError)
+from bottle import (get, post, request, route, run,template, static_file, jinja2_view, redirect, response, HTTPError, HTTPResponse)
 import json
 from pymysql import connect, cursors
 from functools import partial
@@ -9,9 +9,9 @@ from uuid import uuid4
 view = partial(jinja2_view, template_lookup=['templates'])
 
 # setting the connection to the DB server
-connection = connect(host='db4free.net',
-                     user='zivgos',
-                     password='6QP6N220YQU5X^l%',
+connection = connect(host='localhost',
+                     user='root',
+                     password='hilla',
                      db='lunchbox',
                      charset='utf8',
                      cursorclass=cursors.DictCursor)
@@ -55,42 +55,50 @@ def login():
             response.set_cookie("user_id", str(user_id))
             sessionid = str(uuid4().hex)[:8]
             response.set_cookie("sessionid", sessionid)
-            redirect('/dishes')
+            status = "SUCCESS"
+            # redirect('/welcome?username={}'.format(user_name))
         else:
             status = "ERROR"
-    except Exception as e:
+    except HTTPResponse as e:
         print(e)
         status = "ERROR"
-    return json.dumps({"status": status})
+    return json.dumps({"status": status, "username": user_name})
 
 
-@get('/signup')
-@view('login.html')
-def signup():
-        return {}
-def Sign_Up():
-    user_name = request.POST.get('user_name')
-    first_name = request.POST.get('first_name')
-    last_name = request.POST.get('last_name')
-    email = request.POST.get('email')
-    password = request.POST.get('password')
-    sessionid = request.get_cookie("sessionid")
-    try:
-        with connection.cursor() as cursor:
-            sql = "INSERT INTO users (`user_name`,`first_name`, `last_name`,`email`,`password`) VALUES('{}','{}','{}','{}')".format(
-                user_name, first_name, last_name, email, password)
-            cursor.execute(sql)
-            connection.commit()
-            redirect(sessionid)
-    except:
-        return json.dumps({'STATUS': 'ERROR', 'MSG': "error in the values adding"})
+@get('/welcome')
+@view('welcome.html')
+def welcome():
+    user_name = request.query.username
+    return {"username":user_name}
 
 
+# @get('/signup')
+# @view('login.html')
+# def signup():
+#         return {}
+# def Sign_Up():
+#     user_name = request.POST.get('user_name')
+#     first_name = request.POST.get('first_name')
+#     last_name = request.POST.get('last_name')
+#     email = request.POST.get('email')
+#     password = request.POST.get('password')
+#     sessionid = request.get_cookie("sessionid")
+#     try:
+#         with connection.cursor() as cursor:
+#             sql = "INSERT INTO users (`user_name`,`first_name`, `last_name`,`email`,`password`) VALUES('{}','{}','{}','{}')".format(
+#                 user_name, first_name, last_name, email, password)
+#             cursor.execute(sql)
+#             connection.commit()
+#             redirect(sessionid)
+#     except:
+#         return json.dumps({'STATUS': 'ERROR', 'MSG': "error in the values adding"})
 
-@post('/signup')
-@view('login.html')
-def prosses_Sign_Up():
-        return ()
+
+#
+# @post('/signup')
+# @view('login.html')
+# def prosses_Sign_Up():
+#         return ()
 
 
 # Displays the page where you fill the form ('offer.html')
@@ -110,7 +118,6 @@ def login_route():
         'name': request.forms.get("name"),
         'image': None
     }
-
     dict_tags = {
         'kosher': 1 if request.forms.get("kosher") == 'true' else 0,
         'vegetarian': 1 if request.forms.get("vegetarian") == "true" else 0,
@@ -128,15 +135,14 @@ def login_route():
         status = 'SUCCESS'
     except:
         status = 'ERROR'
-
     return json.dumps({'status': status})
 
 
 
-@get('/myaccount')
-@view('login.html')
-def login_route():
-        return ()
+# @get('/myaccount')
+# @view('login.html')
+# def login_route():
+#         return ()
 
 
 @get('/dishes')
@@ -146,7 +152,7 @@ def dishes():
         conn = connection
         c = conn.cursor()
         c.execute(
-            "SELECT meals.id, meals.name ,meals.image, CAST(meals.delivery_date AS char(10)) as date,CONCAT(users.first_name , ' ', users.last_name) as full_name , tags.vegan,"
+            "SELECT meals.id, meals.name ,meals.image, CAST(meals.delivery_date AS char(10)) as date,CONCAT(users.first_name , ' ', users.last_name) as chef , tags.vegan,"
             " tags.vegetarian, tags.meat, tags.fish, tags.kosher, tags.dairy, tags.hot, tags.cold, meals.description"
             " FROM meals"
             " JOIN users ON users.id = meals.chef_id "
@@ -171,21 +177,18 @@ def dishes():
 
 
 
-@post('/dish/<meal_id>')
-def dish(meal_id):
-    # fetch the data from the front
+@post('/dish')
+def dish():
     try:
+        meal_id = request.params.mealid
         user_id = request.get_cookie('user_id')
-        result = execute_query("SELECT customer_id, meal_id FROM transactions JOIN "
-                               "users on users.id = transactions.customer_id where users.id = %s" % user_id)
-        customer_id, meal_id = result[0]
-        insert('transactions', ['customer_id', 'meal_id'], [customer_id, meal_id])
+        #the insert function doesn't work
+        insert('transactions', ['customer_id', 'meal_id'], [user_id, meal_id])
         status = 'SUCCESS'
     except Exception as e:
         print(e)
         status = 'ERROR'
     return json.dumps({'status': status})
-
 
 
 def main():

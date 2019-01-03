@@ -7,7 +7,7 @@ LunchBox.init = function () {
 LunchBox.bindEvents = function () {
     $("#login").submit(LunchBox.sendLoginRequest);
     $("#offer").submit(LunchBox.sendOfferRequest);
-    $(".join").bind(LunchBox.joinAMeal);
+    $(".join").bind("click", LunchBox.joinAMeal);
     // $(window).on("scroll", function() {
     //     var scrollPos = $(window).scrollTop();
     //     if (scrollPos <= 0) {
@@ -29,8 +29,11 @@ LunchBox.sendLoginRequest = function (e) {
             if (result["status"] == "ERROR"){
                 $("#content-wrap").empty()
                 $("#content-wrap").append("<div>Something won't wrong<div/>");
-            }
-        }, "json");
+            } else {
+                username = result["username"]
+                $("#content-wrap").empty()
+                $("#content-wrap").append('<div id="content-wrap"><div class="jumbotron"><h1 class="display-4\">Welcome Back Hiilada</h1><p class="lead">Organize a meal for your coworkers or choose one to join</p><hr class="my-4"></div></div>');
+            }}, "json");
 }
 
 
@@ -78,13 +81,14 @@ LunchBox.sendOfferRequest = function (e) {
         }, "json");
 }
 
-LunchBox.joinAMeal = function() {
-    mealId = $("#meal-id").val();
-    $.post(`/dish/${mealId}`,
+LunchBox.joinAMeal = function(e) {
+    mealId = e.target.getAttribute('data-id');
+    console.log(mealId);
+    $.post(`/dish`, {mealid: mealId},
     function (result) {
         if (result["status"] == "SUCCESS") {
             $("#content-wrap").empty()
-            $("#content-wrap").append("<div>Join successfully<div/>");
+            $("#content-wrap").append("<div>Joined successfully<div/>");
         }
         else {
             $("#content-wrap").empty()
